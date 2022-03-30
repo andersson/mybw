@@ -60,28 +60,28 @@ static void measure(uint64_t block_size)
 	struct timespec start;
 	struct timespec end;
 	uint64_t block;
+	uint64_t sink;
 	uint64_t ts;
 	void *source;
-	void *sink;
+	uint64_t i;
 
 	if (block_size > TEST_SIZE)
 		return;
-
-	sink = malloc(block_size);
-	memset(sink, 0, block_size);
 
 	source = malloc(block_size);
 	memset(source, 0xcd, block_size);
 
 	clock_gettime(CLOCK_MONOTONIC, &start);
 
-	for (block = 0; block < (TEST_SIZE / block_size); block++)
-		memcpy(sink, source, block_size);
+	for (block = 0; block < (TEST_SIZE / block_size); block++) {
+		for (i = 0; i < block_size / sizeof(uint64_t); i++)
+			sink = ((volatile uint64_t *)source)[i];
+	}
 
 	clock_gettime(CLOCK_MONOTONIC, &end);
 
-	free(sink);
 	free(source);
+	(void)sink;
 
 	ts = ((end.tv_sec - start.tv_sec) * NSEC_PER_SEC) + (end.tv_nsec - start.tv_nsec);
 
