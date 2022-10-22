@@ -1,7 +1,7 @@
 OUT := mybw
 
-CFLAGS := -O2 -Wall -fno-builtin
-LDFLAGS := -static -static-libgcc
+CFLAGS += -O2 -Wall -fno-builtin
+LDFLAGS += -static -static-libgcc
 
 SRCS := mybw.c
 OBJS := $(SRCS:.c=.o)
